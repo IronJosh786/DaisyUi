@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import zod from "zod";
+import { z } from "zod";
 
 const options = {
   httpOnly: true,
@@ -18,10 +18,10 @@ const generateAccessAndRefreshToken = async (id) => {
   return { accessToken, refreshToken };
 };
 
-const registerData = zod.object({
-  email: zod.string.email(),
-  username: zod.string(),
-  password: zod.string(),
+const registerData = z.object({
+  email: z.string().email(),
+  username: z.string(),
+  password: z.string(),
 });
 
 const registerUser = async (req, res) => {
@@ -56,9 +56,9 @@ const registerUser = async (req, res) => {
     .json({ message: "User created successfully", data: newUser });
 };
 
-const loginData = zod.object({
-  email: zod.string.email(),
-  password: zod.string(),
+const loginData = z.object({
+  email: z.string().email(),
+  password: z.string(),
 });
 
 const loginUser = async (req, res) => {
