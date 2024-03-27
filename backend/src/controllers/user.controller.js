@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
-import jwt from "jsonwebtoken";
 import { z } from "zod";
+
+const NODE_ENV = process.env.ENVIRONMENT;
 
 const options = {
   httpOnly: true,
@@ -19,19 +20,23 @@ const generateAccessAndRefreshToken = async (id) => {
 };
 
 const registerData = z.object({
-  email: z.string().email(),
-  username: z.string(),
-  password: z.string(),
+  email: z.string().email({ message: "Invalid email format" }),
+  username: z
+    .string()
+    .min(4, { message: "Username must be at least 3 characters" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
 });
 
 const registerUser = async (req, res) => {
-  const { result } = registerData.safeParse(req.body);
+  const { success, error } = registerData.safeParse(req.body);
 
-  if (!result.success) {
-    return res.status(400).json({ message: "Invalid input" });
+  if (!success) {
+    return res.status(400).json({ message: error.errors[0].message });
   }
 
-  const { email, username, password } = result.data;
+  const { email, username, password } = req.body;
 
   const isPresent = await User.findOne({
     $or: [{ username }, { email }],
@@ -57,18 +62,20 @@ const registerUser = async (req, res) => {
 };
 
 const loginData = z.object({
-  email: z.string().email(),
-  password: z.string(),
+  email: z.string().email({ message: "Invalid email format" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
 });
 
 const loginUser = async (req, res) => {
-  const { result } = loginData.safeParse(req.body);
+  const { success, error } = loginData.safeParse(req.body);
 
-  if (!result.success) {
-    return res.status(400).json({ message: "Invalid input" });
+  if (!success) {
+    return res.status(400).json({ message: error.errors[0].message });
   }
 
-  const { email, password } = result.data;
+  const { email, password } = req.body;
 
   const isPresent = await User.findOne({ email });
 
@@ -113,7 +120,10 @@ const logoutUser = async (req, res) => {
     { new: true }
   );
 
-  return res.status(200).json({ message: "User logged out" });
+  return res
+    .status(200)
+    .clearCookie("token", options)
+    .json({ message: "User logged out" });
 };
 
 export { registerUser, loginUser, getCurrentUser, logoutUser };
