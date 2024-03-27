@@ -1,6 +1,24 @@
 import React from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { base } from "../baseUrl.js";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function Home() {
+  const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
+  const logout = async () => {
+    try {
+      const response = await axios.post(`${base}/users/logout`);
+      toast.success(response.data.message);
+      navigate("/login");
+      Cookies.remove("aToken");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content text-center">
@@ -11,7 +29,9 @@ function Home() {
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
             a id nisi.
           </p>
-          <button className="btn btn-primary">Logout</button>
+          <button onClick={logout} className="btn btn-primary">
+            Logout
+          </button>
         </div>
       </div>
     </div>

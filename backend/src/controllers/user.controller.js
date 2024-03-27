@@ -1,11 +1,10 @@
 import { User } from "../models/user.model.js";
 import { z } from "zod";
 
-const NODE_ENV = process.env.ENVIRONMENT;
-
 const options = {
   httpOnly: true,
-  secure: NODE_ENV === "production",
+  secure: true,
+  sameSite: true,
 };
 
 const generateAccessAndRefreshToken = async (id) => {
@@ -97,10 +96,10 @@ const loginUser = async (req, res) => {
     "-refreshToken -password"
   );
 
-  return res
-    .status(200)
-    .cookie("token", accessToken, options)
-    .json({ message: "User logged in successfully", data: user });
+  return res.status(200).json({
+    message: "User logged in successfully",
+    data: { user, accessToken },
+  });
 };
 
 const getCurrentUser = async (req, res) => {
@@ -120,10 +119,11 @@ const logoutUser = async (req, res) => {
     { new: true }
   );
 
-  return res
-    .status(200)
-    .clearCookie("token", options)
-    .json({ message: "User logged out" });
+  return res.status(200).json({ message: "User logged out" });
 };
 
-export { registerUser, loginUser, getCurrentUser, logoutUser };
+const checkAuth = async (req, res) => {
+  return res.status(200).json({ message: "User is logged in" });
+};
+
+export { registerUser, loginUser, getCurrentUser, logoutUser, checkAuth };

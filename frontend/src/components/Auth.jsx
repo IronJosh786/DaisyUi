@@ -4,12 +4,11 @@ import Login from "./Login";
 import Cookies from "js-cookie";
 
 function Auth() {
-  const token = Cookies.get("token");
-  if (token) {
-    return <Outlet />;
-  } else {
+  const token = Cookies.get("aToken");
+  if (!token) {
     return <Login />;
   }
+  return <Outlet />;
 }
 
 export default Auth;
