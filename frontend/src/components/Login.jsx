@@ -4,12 +4,16 @@ import Cookies from "js-cookie";
 import { base } from "../baseUrl.js";
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toggleLoggedIn } from "../features/userSlice.js";
 
 function Login() {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -26,6 +30,7 @@ function Login() {
     try {
       const response = await axios.post(`${base}/users/login`, userDetails);
       toast.success(response.data.message);
+      dispatch(toggleLoggedIn(true));
       Cookies.set("aToken", response.data.data.accessToken, {
         expires: 1,
         path: "",

@@ -4,8 +4,11 @@ import { toast } from "sonner";
 import { base } from "../baseUrl.js";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { toggleLoggedIn } from "../features/userSlice.js";
+import { useDispatch } from "react-redux";
 
 function Home() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
   const logout = async () => {
@@ -13,6 +16,7 @@ function Home() {
       const response = await axios.post(`${base}/users/logout`);
       toast.success(response.data.message);
       navigate("/login");
+      dispatch(toggleLoggedIn(false));
       Cookies.remove("aToken");
     } catch (error) {
       toast.error(error.response.data.message);
