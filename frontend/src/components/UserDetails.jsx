@@ -18,7 +18,6 @@ function UserDetails() {
           username: response.data.data.username,
           email: response.data.data.email,
         });
-        console.log(response.data);
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message);
@@ -27,13 +26,13 @@ function UserDetails() {
     fetchData();
   }, []);
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen bg-base-200 flex items-center justify-center">
       <div className="card w-96 bg-base-100 shadow-xl">
         <figure className="px-10 pt-10">
           <img
             src="https://images.unsplash.com/photo-1528834342297-fdefb9a5a92b?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Shoes"
-            className="rounded-xl"
+            className="rounded"
           />
         </figure>
         <div className="card-body items-center text-center">

@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { base } from "../baseUrl.js";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toggleLoggedIn } from "../features/userSlice.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleTheme } from "../features/themeSlice.js";
 
 function Home() {
   const dispatch = useDispatch();
+  const { darkMode } = useSelector((state) => state.theme);
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
+
+  const changeTheme = () => {
+    dispatch(toggleTheme());
+  };
+
+  useEffect(() => {
+    const html = document.querySelector("html");
+    if (darkMode) {
+      html.setAttribute("data-theme", "business");
+    } else {
+      html.setAttribute("data-theme", "corporate");
+    }
+  }, [darkMode]);
+
   const logout = async () => {
     try {
       const response = await axios.post(`${base}/users/logout`);
@@ -33,7 +49,26 @@ function Home() {
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
             a id nisi.
           </p>
-          <button onClick={logout} className="btn btn-primary">
+          <NavLink
+            to={"/user-details"}
+            className={`link link-hover underline-offset-2 underline hover:text-primary`}
+          >
+            View User Details
+          </NavLink>
+          <br />
+          <div className="text-2xl mt-4">
+            {darkMode ? (
+              <button onClick={changeTheme}>
+                <i className="ri-sun-line"></i>
+              </button>
+            ) : (
+              <button onClick={changeTheme}>
+                <i className="ri-moon-line"></i>
+              </button>
+            )}
+          </div>
+          <br />
+          <button onClick={logout} className="btn btn-primary mt-4">
             Logout
           </button>
         </div>
