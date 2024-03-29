@@ -1,40 +1,26 @@
-import React, { useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { base } from "../baseUrl.js";
-import { NavLink, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { base } from "../baseUrl.js";
+import { useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toggleLoggedIn } from "../features/userSlice.js";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleTheme } from "../features/themeSlice.js";
 
 function Home() {
-  const dispatch = useDispatch();
-  const { darkMode } = useSelector((state) => state.theme);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   axios.defaults.withCredentials = true;
-
-  const changeTheme = () => {
-    dispatch(toggleTheme());
-  };
-
-  useEffect(() => {
-    const html = document.querySelector("html");
-    if (darkMode) {
-      html.setAttribute("data-theme", "business");
-    } else {
-      html.setAttribute("data-theme", "corporate");
-    }
-  }, [darkMode]);
 
   const logout = async () => {
     try {
       const response = await axios.post(`${base}/users/logout`);
       toast.success(response.data.message);
       navigate("/login");
-      dispatch(toggleLoggedIn(false));
       Cookies.remove("aToken");
+      dispatch(toggleLoggedIn(false));
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -56,19 +42,7 @@ function Home() {
             View User Details
           </NavLink>
           <br />
-          <div className="text-2xl mt-4">
-            {darkMode ? (
-              <button onClick={changeTheme}>
-                <i className="ri-sun-line"></i>
-              </button>
-            ) : (
-              <button onClick={changeTheme}>
-                <i className="ri-moon-line"></i>
-              </button>
-            )}
-          </div>
-          <br />
-          <button onClick={logout} className="btn btn-primary mt-4">
+          <button onClick={logout} className="btn btn-primary mt-8">
             Logout
           </button>
         </div>

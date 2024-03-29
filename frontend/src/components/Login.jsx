@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { base } from "../baseUrl.js";
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toggleLoggedIn } from "../features/userSlice.js";
 
 function Login() {

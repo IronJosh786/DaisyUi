@@ -1,19 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "./components/Register";
-import Login from "./components/Login";
+import "./App.css";
+import store from "./app/store";
+import { Toaster } from "sonner";
 import Home from "./components/Home";
 import Auth from "./components/Auth";
-import { Toaster } from "sonner";
-import "./App.css";
+import Login from "./components/Login";
 import { Provider } from "react-redux";
-import store from "./app/store";
+import Navbar from "./components/Navbar";
+import Register from "./components/Register";
 import UserDetails from "./components/UserDetails";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Provider store={store}>
       <Toaster richColors position="top-center" />
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/signup" element={<Register />} />
           <Route path="/login" element={<Login />} />
